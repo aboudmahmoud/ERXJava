@@ -3,10 +3,17 @@ package com.example.rxexample;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import java.util.concurrent.TimeUnit;
 
+import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.core.ObservableEmitter;
+import io.reactivex.rxjava3.core.ObservableOnSubscribe;
+import io.reactivex.rxjava3.core.Observer;
+import io.reactivex.rxjava3.core.SingleObserver;
+import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.observables.ConnectableObservable;
 import io.reactivex.rxjava3.subjects.AsyncSubject;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
@@ -95,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
         subject.onNext("G");
         nape(1000);*/
   //AsyncSubject both 1 an  2 getall info just last one
-        AsyncSubject<String> subject = AsyncSubject.create();
+       /* AsyncSubject<String> subject = AsyncSubject.create();
         subject.subscribe(aLong ->System.out.println("Student 1  is "+ aLong));
         subject.onNext("A");
         nape(1000);
@@ -112,7 +119,41 @@ public class MainActivity extends AppCompatActivity {
         nape(1000);
         subject.onNext("G");
         nape(1000);
-        subject.onComplete();
+        subject.onComplete();*/
+        //observable to observer using suscribe pathing observer as pramter and send data using onnext
+        Observable observable=Observable.create(new ObservableOnSubscribe<Object>() {
+            @Override
+            public void subscribe(@NonNull ObservableEmitter<Object> emitter) throws Throwable {
+                for (int i=0 ; i<5 ;i++)
+                {
+                    emitter.onNext("Aboud is Codeing "+ i);
+                }
+                emitter.onComplete();
+            }
+        });
+        Observer observer = new Observer() {
+            @Override
+            public void onSubscribe(@NonNull Disposable d) {
+                Log.d("aboud","onSubscribe ");
+            }
+
+            @Override
+            public void onNext(Object o) {
+                Log.d("aboud","onNext "+o);
+            }
+
+            @Override
+            public void onError(@NonNull Throwable e) {
+                Log.d("aboud","onError "+e.getMessage());
+            }
+
+            @Override
+            public void onComplete() {
+                Log.d("aboud","onComplete");
+            }
+        };
+
+        observable.subscribe(observer);
 
     }
 
