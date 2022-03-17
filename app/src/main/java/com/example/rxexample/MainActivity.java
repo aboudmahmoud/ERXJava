@@ -120,8 +120,8 @@ public class MainActivity extends AppCompatActivity {
         subject.onNext("G");
         nape(1000);
         subject.onComplete();*/
-        //observable to observer using suscribe pathing observer as pramter and send data using onnext
-        Observable observable=Observable.create(new ObservableOnSubscribe<Object>() {
+        //observable.create to observer using suscribe pathing observer as pramter and send data using onnext
+        /*Observable observable=Observable.create(new ObservableOnSubscribe<Object>() {
             @Override
             public void subscribe(@NonNull ObservableEmitter<Object> emitter) throws Throwable {
                 for (int i=0 ; i<5 ;i++)
@@ -130,7 +130,10 @@ public class MainActivity extends AppCompatActivity {
                 }
                 emitter.onComplete();
             }
-        });
+        });*/
+
+        //Observable.just to observer with pathing item limit 10 only with auto complet
+        Observable observable=Observable.just(0,1,2,3,5);
         Observer observer = new Observer() {
             @Override
             public void onSubscribe(@NonNull Disposable d) {
