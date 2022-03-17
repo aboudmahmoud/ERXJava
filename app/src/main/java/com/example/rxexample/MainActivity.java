@@ -133,7 +133,15 @@ public class MainActivity extends AppCompatActivity {
         });*/
 
         //Observable.just to observer with pathing item limit 10 only with auto complet
-        Observable observable=Observable.just(0,1,2,3,5);
+        /*Observable observable=Observable.just(0,1,2,3,5);*/
+
+        //Observable.fromArray take array as parrmeter
+       Integer[] list = new Integer[5];
+        for (int i=0 ; i<5; i++)
+        {
+            list[i]=i;
+        }
+        Observable observable=Observable.fromArray(list);
         Observer observer = new Observer() {
             @Override
             public void onSubscribe(@NonNull Disposable d) {
