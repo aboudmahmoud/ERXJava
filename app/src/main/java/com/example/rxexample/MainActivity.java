@@ -136,12 +136,15 @@ public class MainActivity extends AppCompatActivity {
         /*Observable observable=Observable.just(0,1,2,3,5);*/
 
         //Observable.fromArray take array as parrmeter
-       Integer[] list = new Integer[5];
+        /* Integer[] list = new Integer[5];
         for (int i=0 ; i<5; i++)
         {
             list[i]=i;
         }
-        Observable observable=Observable.fromArray(list);
+        Observable observable=Observable.fromArray(list);*/
+
+        //Observable.range without peroud in between
+        Observable observable=Observable.range(0,5);
         Observer observer = new Observer() {
             @Override
             public void onSubscribe(@NonNull Disposable d) {
