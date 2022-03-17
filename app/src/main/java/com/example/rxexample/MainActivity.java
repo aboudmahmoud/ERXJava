@@ -7,14 +7,17 @@ import android.util.Log;
 
 import java.util.concurrent.TimeUnit;
 
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.ObservableEmitter;
 import io.reactivex.rxjava3.core.ObservableOnSubscribe;
 import io.reactivex.rxjava3.core.Observer;
+
 import io.reactivex.rxjava3.core.SingleObserver;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.observables.ConnectableObservable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import io.reactivex.rxjava3.subjects.AsyncSubject;
 import io.reactivex.rxjava3.subjects.BehaviorSubject;
 import io.reactivex.rxjava3.subjects.PublishSubject;
@@ -144,30 +147,21 @@ public class MainActivity extends AppCompatActivity {
         Observable observable=Observable.fromArray(list);*/
 
         //Observable.range without peroud in between
-        Observable observable=Observable.range(0,5);
-        Observer observer = new Observer() {
-            @Override
-            public void onSubscribe(@NonNull Disposable d) {
-                Log.d("aboud","onSubscribe ");
-            }
+       // Observable observable=Observable.range(0,5);
 
-            @Override
-            public void onNext(Object o) {
-                Log.d("aboud","onNext "+o);
-            }
 
-            @Override
-            public void onError(@NonNull Throwable e) {
-                Log.d("aboud","onError "+e.getMessage());
-            }
+        Observable.just(1,2,3,4,5)
+                .subscribeOn(Schedulers.io())
+                //Scend subscribeOn Will not Work
+                .subscribeOn(Schedulers.newThread())
+                .doOnNext(c -> Log.d("aboud","Upstream " + c + " Cureent Thread"+Thread.currentThread().getName()))
+                .observeOn(Schedulers.computation())
+                //Scend .observeOn or the last one will work
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(o -> Log.d("aboud","DownStream " + o + " Cureent Thread"+Thread.currentThread().getName()));
+        nape(300);
 
-            @Override
-            public void onComplete() {
-                Log.d("aboud","onComplete");
-            }
-        };
 
-        observable.subscribe(observer);
 
     }
 
