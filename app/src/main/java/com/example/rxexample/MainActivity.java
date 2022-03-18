@@ -21,6 +21,7 @@ import io.reactivex.rxjava3.core.Observer;
 
 import io.reactivex.rxjava3.core.SingleObserver;
 import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.functions.Function;
 import io.reactivex.rxjava3.observables.ConnectableObservable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import io.reactivex.rxjava3.subjects.AsyncSubject;
@@ -48,7 +49,7 @@ ActivityMainBinding binding;
 
                     @Override
                     public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
+                        if(charSequence.length()!=0)
                         emitter.onNext(charSequence);
                     }
 
@@ -60,6 +61,17 @@ ActivityMainBinding binding;
             }
         })
                 .doOnNext(o -> Log.d(TAG,"UpsTream:"+o))
+                //to do opertain in gettext value berfor send it to  DownStream
+                .map(new Function<Object, Object>() {
+                    @Override
+                    public Object apply(Object o) throws Throwable {
+                        return Integer.parseInt(o.toString())*2;
+                    }
+                })
+                //to wait befro send the value
+                .debounce(2,TimeUnit.SECONDS)
+                //to no send data if same after adting ex = 3 after edit 3 than dont send
+                .distinctUntilChanged()
                 .subscribe(o -> Log.d(TAG, "DownStream:"+o));
     }
 
