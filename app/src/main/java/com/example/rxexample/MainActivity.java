@@ -10,24 +10,13 @@ import android.util.Log;
 
 import com.example.rxexample.databinding.ActivityMainBinding;
 
-import java.util.concurrent.TimeUnit;
 
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.ObservableEmitter;
 import io.reactivex.rxjava3.core.ObservableOnSubscribe;
-import io.reactivex.rxjava3.core.Observer;
-
-import io.reactivex.rxjava3.core.SingleObserver;
-import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.core.ObservableSource;
 import io.reactivex.rxjava3.functions.Function;
-import io.reactivex.rxjava3.observables.ConnectableObservable;
-import io.reactivex.rxjava3.schedulers.Schedulers;
-import io.reactivex.rxjava3.subjects.AsyncSubject;
-import io.reactivex.rxjava3.subjects.BehaviorSubject;
-import io.reactivex.rxjava3.subjects.PublishSubject;
-import io.reactivex.rxjava3.subjects.ReplaySubject;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -61,18 +50,26 @@ ActivityMainBinding binding;
             }
         })
                 .doOnNext(o -> Log.d(TAG,"UpsTream:"+o))
-                //to do opertain in gettext value berfor send it to  DownStream
-                .map(new Function<Object, Object>() {
+                //filter make shor the specifc word doesnt send
+             .filter(o -> !o.toString().equalsIgnoreCase("aboud"))
+                //filter map is editng the data  we send
+               .flatMap(new Function<Object, ObservableSource<?>>() {
                     @Override
-                    public Object apply(Object o) throws Throwable {
-                        return Integer.parseInt(o.toString())*2;
+                    public ObservableSource<?> apply(Object o) throws Throwable {
+                        return dataToApi(o.toString());
                     }
                 })
-                //to wait befro send the value
-                .debounce(2,TimeUnit.SECONDS)
-                //to no send data if same after adting ex = 3 after edit 3 than dont send
-                .distinctUntilChanged()
-                .subscribe(o -> Log.d(TAG, "DownStream:"+o));
+                .subscribe(o ->{
+                    //dataToApi(o.toString());
+                    Log.d(TAG, "DownStream:"+o);
+
+                });
     }
 
+    public Observable  dataToApi(String data)
+    {
+        Observable observable= Observable.just("calling api to send "+data);
+        observable.subscribe(o->Log.d(TAG,"Senrding the "+data+" data "));
+        return observable;
+    }
 }
